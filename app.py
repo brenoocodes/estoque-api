@@ -1,4 +1,4 @@
-from config import *
+from src.config import *
 from src.models import *
 from src.autor import *
 
