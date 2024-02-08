@@ -12,3 +12,7 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 verificador = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
+
+@app.route('/')
+def home():
+    return '<p>Ok</p>'
