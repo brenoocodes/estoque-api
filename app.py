@@ -1,6 +1,6 @@
 from src.config import *
 from src.models import *
-from src.autor import *
+from src.funcionarios import *
 
 @app.route('/', methods=['GET'])
 def home():

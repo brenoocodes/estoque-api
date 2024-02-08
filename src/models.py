@@ -2,46 +2,61 @@ from datetime import datetime  # Para manipulation de datas e horas
 from src.config import app, db
  # Importa o objeto db, que é uma instância do SQLAlchemy definida no __init__.py
 
-class Autor(db.Model):
-    __tablename__ = 'autor'
-    id_autor = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(255), index=True)
-    email = db.Column(db.String(50), unique=True)
-    senha = db.Column(db.String(100))
-    admin = db.Column(db.Boolean)
-    email_verificado = db.Column(db.Boolean, default=False)  # Adicionando campo de verificação de e-mail
-    postagens = db.relationship('Postagem', backref='autor', lazy=True)
+class Funcionarios(db.Model):
+    __tablename__ = 'funcionarios'
+    matricula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    nome = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    senha = db.Column(db.String(255), nullable=False)
+    administrador = db.Column(db.Boolean, default=False)
 
-    def __init__(self, nome, email, senha, admin=False, email_verificado=False):
-        self.nome = nome
-        self.email = email
-        self.senha = senha
-        self.admin = admin
-        self.email_verificado = email_verificado
 
-class Postagem(db.Model):
-    __tablename__ = 'postagem'
-    id_postagem = db.Column(db.Integer, primary_key=True)
-    descricao = db.Column(db.String(700))
-    autor_nome = db.Column(db.String(255), db.ForeignKey('autor.nome'))
-
-# Adicionando a tabela para armazenar tokens de verificação de e-mail
-class TokenVerificacaoEmail(db.Model):
-    __tablename__ = 'token_verificacao_email'
+class Fornecedores(db.Model):
+    __tablename__ = 'fornecedores'
     id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(255), unique=True)
-    email = db.Column(db.String(50), unique=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)  # Adiciona a coluna de data e hora
+    cnpj = db.Column(db.Integer, unique=True, nullable=False)
+    razao_social = db.Column(db.String(255), unique=True, nullable=False)
+    nome_fantasia = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    telefone = db.Column(db.Integer, unique=True, nullable=False)
+    produtos = db.relationship('Produtos', backref='fornecedor', lazy=True)
+    entradas = db.relationship('EntradasEstoque', backref='entradas', lazy=True)
 
-    def __init__(self, token, email):
-        self.token = token
-        self.email = email
+class Produtos(db.Model):
+    __tablename__ = 'produtos'
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(255), nullable=False, index=True)
+    nome_estoque = db.Column(db.String(255), nullable=False)
+    preco = db.Column(db.Float)
+    quantidade = db.Column(db.Integer)
+    fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id'))
+    entradas = db.relationship('EntradasEstoque', backref='produtos', lazy=True)
+    saidas_estoque = db.relationship('SaidasEstoque', backref='produtos', lazy=True)
+
+class EntradasEstoque(db.Model):
+    __tablename__ = 'entradaestoque'
+    id = db.Column(db.Integer, primary_key=True)
+    nota = db.Column(db.String(50), nullable=False)
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), nullable=False)
+    fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id'), nullable=False)
+    data_entrada = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    quantidade = db.Column(db.Integer, nullable=False)
+    funcionario_matricula = db.Column(db.Integer, db.ForeignKey('funcionarios.matricula'), nullable=False)
+
+class SaidasEstoque(db.Model):
+    __tablename__='saidasestoque'
+    id = db.Column(db.Integer, primary_key=True)
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), nullable=False)
+    data_saida = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    quantidade = db.Column(db.Integer, nullable=False)
+    funcionario_responsavel = db.Column(db.Integer, db.ForeignKey('funcionarios.matricula'), nullable=False)
+    funcionario_requisitante = db.Column(db.Integer, db.ForeignKey('funcionarios.matricula'), nullable=False)
+
 
 
 
 
 # Criar o database
-if __name__ == "__main__":
-    with app.app_context():
-        db.drop_all()
-        db.create_all()
+# with app.app_context():
+#     db.drop_all()
+#     db.create_all()
