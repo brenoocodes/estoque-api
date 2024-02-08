@@ -11,3 +11,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:breno19042003@localhost/es
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 verificador = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+

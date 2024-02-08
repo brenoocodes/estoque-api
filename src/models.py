@@ -1,7 +1,6 @@
 from datetime import datetime  # Para manipulation de datas e horas
-from apiestoque.__init__ import app, db
+from src.config import app, db
  # Importa o objeto db, que é uma instância do SQLAlchemy definida no __init__.py
-
 
 class Autor(db.Model):
     __tablename__ = 'autor'
@@ -23,7 +22,6 @@ class Autor(db.Model):
 class Postagem(db.Model):
     __tablename__ = 'postagem'
     id_postagem = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(50))
     descricao = db.Column(db.String(700))
     autor_nome = db.Column(db.String(255), db.ForeignKey('autor.nome'))
 
