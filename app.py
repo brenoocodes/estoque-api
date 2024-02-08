@@ -1,6 +1,6 @@
-from src.config import *
-from src.models import *
-from src.autor import *
+from config import *
+from models import *
+from autor import *
 
 @app.route('/')
 def home():

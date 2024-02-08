@@ -1,5 +1,5 @@
 from datetime import datetime  # Para manipulation de datas e horas
-from src.config import app, db
+from config import app, db
  # Importa o objeto db, que é uma instância do SQLAlchemy definida no __init__.py
 
 class Autor(db.Model):
@@ -41,7 +41,7 @@ class TokenVerificacaoEmail(db.Model):
 
 
 # Criar o database
-# if __name__ == "__main__":
-#     with app.app_context():
-#         db.drop_all()
-#         db.create_all()
+if __name__ == "__main__":
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
