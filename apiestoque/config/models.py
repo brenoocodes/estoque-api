@@ -1,5 +1,5 @@
-from datetime import datetime  # Para manipulação de datas e horas
-from apiestoque.__init__ import app, db, bcrypt, verificador
+from datetime import datetime  # Para manipulation de datas e horas
+from apiestoque.__init__ import app, db
  # Importa o objeto db, que é uma instância do SQLAlchemy definida no __init__.py
 
 

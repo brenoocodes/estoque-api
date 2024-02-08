@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, jsonify, make_response, url_for
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from itsdangerous import URLSafeTimedSerializer
@@ -11,4 +11,3 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:breno19042003@localhost/es
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 verificador = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-
