@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from config import app, db, bcrypt
 from models import Autor
 
-@app.route('/autores')
+@app.route('/autores', methods=['GET'])
 
 def obter_autores():
     autores = Autor.query.all()

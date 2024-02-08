@@ -2,7 +2,7 @@ from config import *
 from models import *
 from autor import *
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     return '<p>Ok</p>'
 
