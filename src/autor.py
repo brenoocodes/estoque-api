@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from config import app, db, bcrypt
-from models import Autor
+from src.models import Autor
 
 @app.route('/autores', methods=['GET'])
 
