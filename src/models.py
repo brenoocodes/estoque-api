@@ -11,27 +11,29 @@ class Funcionarios(db.Model):
     administrador = db.Column(db.Boolean, default=False)
 
 
-class Fornecedores(db.Model):
-    __tablename__ = 'fornecedores'
-    id = db.Column(db.Integer, primary_key=True)
-    cnpj = db.Column(db.Integer, unique=True, nullable=False)
-    razao_social = db.Column(db.String(255), unique=True, nullable=False)
-    nome_fantasia = db.Column(db.String(255), unique=True, nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    telefone = db.Column(db.Integer, unique=True, nullable=False)
-    produtos = db.relationship('Produtos', backref='fornecedor', lazy=True)
-    entradas = db.relationship('EntradasEstoque', backref='entradas', lazy=True)
+class ProdutosFornecedores(db.Model):
+    __tablename__ = 'produtos_fornecedores'
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), primary_key=True)
+    fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id'), primary_key=True)
+
 
 class Produtos(db.Model):
     __tablename__ = 'produtos'
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(255), nullable=False, index=True)
+    nome = db.Column(db.String(255), nullable=False, index=True, unique=True)
     nome_estoque = db.Column(db.String(255), nullable=False)
-    preco = db.Column(db.Float)
+    preco = db.Column(db.Float, default=0.0)
     quantidade = db.Column(db.Integer)
-    fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id'))
-    entradas = db.relationship('EntradasEstoque', backref='produtos', lazy=True)
-    saidas_estoque = db.relationship('SaidasEstoque', backref='produtos', lazy=True)
+    fornecedores = db.relationship('Fornecedores', secondary=ProdutosFornecedores, backref=db.backref('produtos', lazy='dynamic'))
+
+class Fornecedores(db.Model):
+    __tablename__ = 'fornecedores'
+    id = db.Column(db.Integer, primary_key=True)
+    cnpj = db.Column(db.String(14), unique=True, nullable=False)
+    razao_social = db.Column(db.String(255), nullable=False)
+    nome_fantasia = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    telefone = db.Column(db.String(14), nullable=False)
 
 class EntradasEstoque(db.Model):
     __tablename__ = 'entradaestoque'
