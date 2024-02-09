@@ -1,10 +1,12 @@
-from flask import Flask, jsonify, request
+from flask import jsonify, request
+from src.login import *
 from src.config import app, db, bcrypt
 from src.models import Funcionarios
 
 
 @app.route('/funcionario', methods=['GET'])
-def exibir_funcionarios():
+@token_obrigatorio
+def exibir_funcionarios(funcionario):
     funcionarios = Funcionarios.query.all()
 
     listadefuncionarios = []
@@ -18,7 +20,8 @@ def exibir_funcionarios():
     return jsonify(listadefuncionarios)
 
 @app.route('/funcionario/<int:matricula>', methods=['GET'])
-def pegar_funcionario_por_matricula(matricula):
+@token_obrigatorio
+def pegar_funcionario_por_matricula(funcionario, matricula):
     funcionario = Funcionarios.query.filter_by(matricula=matricula).first()
     if not funcionario:
         return jsonify({'mensagem': 'Funcionário não encontrado'})
@@ -50,7 +53,8 @@ def cadastrar_funcionario():
 
 
 @app.route('/funcionario/<int:matricula>', methods=['PUT'])
-def alterar_funcionario(matricula):
+@token_obrigatorio
+def alterar_funcionario(funcionario, matricula):
     try:
         funcionario_alterar = request.get_json()
         funcionario = Funcionarios.query.filter_by(matricula=matricula).first()

@@ -1,9 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 from src.config import app, db
+from src.login import *
 from src.models import Fornecedores, ProdutosFornecedores, Produtos
 
 @app.route('/fornecedor', methods=['GET'])
-def exibir_fornecedores():
+@token_obrigatorio
+def exibir_fornecedores(funcionario):
     try:
         fornecedores = Fornecedores.query.all()
 
@@ -37,7 +39,8 @@ def exibir_fornecedores():
         return jsonify({'mensagem': 'Algum erro ocorreu'}), 500
 
 @app.route('/fornecedor/<int:id>', methods=['GET'])
-def pegar_fornecedor_por_id(id):
+@token_obrigatorio
+def pegar_fornecedor_por_id(funcionario, id):
     fornecedor = Fornecedores.query.filter_by(id=id).first()
     if not fornecedor:
         return jsonify({'mensagem': 'Fornecedor não encontrado'})
@@ -63,7 +66,8 @@ def pegar_fornecedor_por_id(id):
 
 
 @app.route('/fornecedor', methods=['POST'])
-def cadastrar_fornecedor():
+@token_obrigatorio
+def cadastrar_fornecedor(funcionario):
     try:
         novo_fornecedor = request.get_json()
         cnpj = novo_fornecedor['cnpj']
@@ -81,7 +85,8 @@ def cadastrar_fornecedor():
 
 
 @app.route('/fornecedor/<int:id>', methods=['PUT'])
-def alterar_fornecedor(id):
+@token_obrigatorio
+def alterar_fornecedor(funcionario, id):
     try:
         fornecedor_alterar = request.get_json()
         fornecedor = Fornecedores.query.filter_by(id=id).first()
@@ -120,7 +125,8 @@ def alterar_fornecedor(id):
     
 #delete fornecedor
 @app.route('/fornecedor/<int:id>', methods=['DELETE'])
-def deletar_fornecedor(id):
+@token_obrigatorio
+def deletar_fornecedor(funcionario, id):
     fornecedor = Fornecedores.query.filter_by(id=id).first()
     if not fornecedor:
         return jsonify({'mensagem': 'Não existe esse fornecedor'})

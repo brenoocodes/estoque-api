@@ -1,10 +1,12 @@
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 from src.config import app, db
+from src.login import *
 from src.models import Produtos, Fornecedores, ProdutosFornecedores
 
 #adicionar fornecedor ao produto
 @app.route('/produtos/<int:id_produto>', methods=['POST'])
-def adicionar_fornecedor_ao_produto(id_produto):
+@token_obrigatorio
+def adicionar_fornecedor_ao_produto(funcionario, id_produto):
     try:
         produto = Produtos.query.filter_by(id=id_produto).first()
         if not produto:
@@ -35,21 +37,31 @@ def adicionar_fornecedor_ao_produto(id_produto):
         return jsonify({'mensagem': 'Algum erro'})
 #exclusão
 @app.route('/produtos/<int:id_produto>/<int:id_fornecedor>', methods=['DELETE'])
-def deletar_fornecedor_do_produto(id_produto, id_fornecedor):
+@token_obrigatorio
+def deletar_fornecedor_do_produto(funcionario, id_produto, id_fornecedor):
     relacao =  ProdutosFornecedores.query.filter_by(produto_id=id_produto, fornecedor_id=id_fornecedor).first()
     produto = Produtos.query.filter_by(id=id_produto).first()
     fornecedor = Fornecedores.query.filter_by(id=id_fornecedor).first()
+    
     if relacao:
         db.session.delete(relacao)
         db.session.commit()
-        return jsonify ({'mensagem': f'A relação entre {produto.nome} e {fornecedor.nome_fantasia} foi excluído com sucesso'})
-    return jsonify({'mensagem': f'Ainda não existia a relação entre {produto.nome} e {fornecedor.nome_fantasia}.'})
+        if produto and fornecedor:
+            return jsonify({'mensagem': f'A relação entre {produto.nome} e {fornecedor.nome_fantasia} foi excluído com sucesso'})
+        else:
+            return jsonify({'mensagem': f'A relação foi excluída com sucesso'})
+    else:
+        if produto and fornecedor:
+            return jsonify({'mensagem': f'Ainda não existia a relação entre {produto.nome} e {fornecedor.nome_fantasia}.'})
+        else:
+            return jsonify({'mensagem': f'Ainda não existia a relação.'})
 
 
 #adicionar produto ao fornecedor
 
 @app.route('/fornecedor/<int:id_fornecedor>', methods=['POST'])
-def adicionar_produto_ao_fornecedor(id_fornecedor):
+@token_obrigatorio
+def adicionar_produto_ao_fornecedor(funcionario, id_fornecedor):
     try:
         fornecedor = Fornecedores.query.filter_by(id=id_fornecedor).first()
         if not fornecedor:
@@ -79,7 +91,8 @@ def adicionar_produto_ao_fornecedor(id_fornecedor):
         return jsonify({'mensagem': 'Algum erro'}), 500
 #exclusão
 @app.route('/fornecedor/<int:id_fornecedor>/<int:id_produto>', methods=['DELETE'])
-def deletar_produto_do_fornecedor(id_fornecedor, id_produto):
+@token_obrigatorio
+def deletar_produto_do_fornecedor(funcionario, id_fornecedor, id_produto):
     relacao =  ProdutosFornecedores.query.filter_by(produto_id=id_produto, fornecedor_id=id_fornecedor).first()
     produto = Produtos.query.filter_by(id=id_produto).first()
     fornecedor = Fornecedores.query.filter_by(id=id_fornecedor).first()

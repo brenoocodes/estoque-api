@@ -1,9 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import jsonify, request
+from src.login import *
 from src.config import app, db
 from src.models import Produtos, Fornecedores, ProdutosFornecedores
 
 @app.route('/produtos', methods=['GET'])
-def listar_produtos():
+@token_obrigatorio
+def listar_produtos(funcionario):
     produtos = Produtos.query.all()
 
     lista_de_produtos = []
@@ -30,7 +32,8 @@ def listar_produtos():
     return jsonify(lista_de_produtos)
 
 @app.route('/produtos/<int:id>', methods=['GET'])
-def pegar_produto_por_id(id):
+@token_obrigatorio
+def pegar_produto_por_id(funcionario, id):
     produto = Produtos.query.filter_by(id=id).first()
     if not produto:
         return jsonify({'mensagem': 'Produto não encontrado'})
@@ -55,7 +58,8 @@ def pegar_produto_por_id(id):
     return jsonify(produto_atual)
 
 @app.route('/produtos', methods=['POST'])
-def cadastrar_produto():
+@token_obrigatorio
+def cadastrar_produto(funcionario):
     try:
         novo_produto = request.get_json()
         nome = novo_produto['nome']
@@ -79,7 +83,8 @@ def cadastrar_produto():
         return jsonify({'mensagem': 'Algo deu errado'}), 500
 
 @app.route('/produtos/<int:id>', methods=['PUT'])
-def alterar_produtos(id):
+@token_obrigatorio
+def alterar_produtos(funcionario, id):
     try:
         produto_alterado = request.get_json()
         produto = Produtos.query.filter_by(id=id).first()
@@ -121,7 +126,8 @@ def alterar_produtos(id):
         print(e)
         return jsonify({'mensagem': 'Algo de errado não está certo'}), 500  
 @app.route('/produtos/<int:id>', methods=['DELETE'])
-def deletar_produtos(id):
+@token_obrigatorio
+def deletar_produtos(funcionario, id):
     produto = Produtos.query.filter_by(id=id).first()
     if not produto:
         return jsonify({'mensagem': 'Produto não encontrado'})
