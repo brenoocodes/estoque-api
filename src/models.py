@@ -10,22 +10,6 @@ class Funcionarios(db.Model):
     senha = db.Column(db.String(255), nullable=False)
     administrador = db.Column(db.Boolean, default=False)
 
-
-class ProdutosFornecedores(db.Model):
-    __tablename__ = 'produtos_fornecedores'
-    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), primary_key=True)
-    fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id'), primary_key=True)
-
-
-class Produtos(db.Model):
-    __tablename__ = 'produtos'
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(255), nullable=False, index=True, unique=True)
-    nome_estoque = db.Column(db.String(255), nullable=False)
-    preco = db.Column(db.Float, default=0.0)
-    quantidade = db.Column(db.Integer)
-    fornecedores = db.relationship('Fornecedores', secondary=ProdutosFornecedores, backref=db.backref('produtos', lazy='dynamic'))
-
 class Fornecedores(db.Model):
     __tablename__ = 'fornecedores'
     id = db.Column(db.Integer, primary_key=True)
@@ -34,6 +18,22 @@ class Fornecedores(db.Model):
     nome_fantasia = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     telefone = db.Column(db.String(14), nullable=False)
+
+class Produtos(db.Model):
+    __tablename__ = 'produtos'
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(255), nullable=False, index=True)
+    nome_estoque = db.Column(db.String(255), nullable=False)
+    medida = db.Column(db.String(50), nullable=False)
+    preco = db.Column(db.Float, default=0.0)
+    quantidade = db.Column(db.Integer)
+
+    fornecedores = db.relationship('Fornecedores', secondary='produtos_fornecedores', backref=db.backref('produtos', lazy='dynamic'))
+
+class ProdutosFornecedores(db.Model):
+    __tablename__ = 'produtos_fornecedores'
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), primary_key=True)
+    fornecedor_id = db.Column(db.Integer, db.ForeignKey('fornecedores.id'), primary_key=True)
 
 class EntradasEstoque(db.Model):
     __tablename__ = 'entradaestoque'

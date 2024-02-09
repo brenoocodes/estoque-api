@@ -1,21 +1,65 @@
 from flask import Flask, jsonify, request
 from src.config import app, db
-from src.models import Fornecedores
+from src.models import Fornecedores, ProdutosFornecedores, Produtos
 
 @app.route('/fornecedor', methods=['GET'])
-def exibir_fornecedors():
-    fornecedores = Fornecedores.query.all()
+def exibir_fornecedores():
+    try:
+        fornecedores = Fornecedores.query.all()
 
-    listadefornecedores = []
-    for fornecedor in fornecedores:
-        fornecedor_atual = {}
-        fornecedor_atual['cnpj'] = fornecedor.cnpj
-        fornecedor_atual['razao_social'] = fornecedor.razao_social
-        fornecedor_atual['nome_fantasia'] = fornecedor.nome_fantasia
-        fornecedor_atual['email'] = fornecedor.email
-        fornecedor_atual['telefone'] = fornecedor.telefone
-        listadefornecedores.append(fornecedor_atual)
-    return jsonify(listadefornecedores)
+        listadefornecedores = []
+        for fornecedor in fornecedores:
+            fornecedor_atual = {}
+            fornecedor_atual['id'] = fornecedor.id
+            fornecedor_atual['cnpj'] = fornecedor.cnpj
+            fornecedor_atual['razao_social'] = fornecedor.razao_social
+            fornecedor_atual['nome_fantasia'] = fornecedor.nome_fantasia
+            fornecedor_atual['email'] = fornecedor.email
+            fornecedor_atual['telefone'] = fornecedor.telefone
+
+            produtos_fornecedor = ProdutosFornecedores.query.filter_by(fornecedor_id=fornecedor_atual['id']).all()
+            if produtos_fornecedor:
+                produtos_atual = []
+                for pf in produtos_fornecedor:
+                    produto = Produtos.query.get(pf.produto_id)
+                    if produto:
+                        produtos_atual.append({'id': produto.id, 'nome': produto.nome})
+                fornecedor_atual['produtos'] = produtos_atual
+            else:
+                fornecedor_atual['produtos'] = 'Esse fornecedor ainda não tem produtos cadastrados'
+
+            listadefornecedores.append(fornecedor_atual)
+        
+        return jsonify(listadefornecedores)
+    
+    except Exception as e:
+        print(e)
+        return jsonify({'mensagem': 'Algum erro ocorreu'}), 500
+
+@app.route('/fornecedor/<int:id>', methods=['GET'])
+def pegar_fornecedor_por_id(id):
+    fornecedor = Fornecedores.query.filter_by(id=id).first()
+    if not fornecedor:
+        return jsonify({'mensagem': 'Fornecedor não encontrado'})
+    fornecedor_atual = {}
+    fornecedor_atual['id'] = fornecedor.id
+    fornecedor_atual['cnpj'] = fornecedor.cnpj
+    fornecedor_atual['razao_social'] = fornecedor.razao_social
+    fornecedor_atual['nome_fantasia'] = fornecedor.nome_fantasia
+    fornecedor_atual['email'] = fornecedor.email
+    fornecedor_atual['telefone'] = fornecedor.telefone
+
+    produtos_fornecedor = ProdutosFornecedores.query.filter_by(fornecedor_id=fornecedor_atual['id']).all()
+    if produtos_fornecedor:
+        produtos_atual = []
+        for pf in produtos_fornecedor:
+            produto = Produtos.query.get(pf.produto_id)
+            if produto:
+                produtos_atual.append({'id': produto.id, 'nome': produto.nome})
+        fornecedor_atual['produtos'] = produtos_atual
+    else:
+        fornecedor_atual['produtos'] = 'Esse fornecedor ainda não tem produtos cadastrados'
+    return jsonify(fornecedor_atual)
 
 
 @app.route('/fornecedor', methods=['POST'])
@@ -34,3 +78,58 @@ def cadastrar_fornecedor():
     except Exception as e:
         print(e)
         return jsonify({'mensagem': 'algo deu errado'}), 500
+
+
+@app.route('/fornecedor/<int:id>', methods=['PUT'])
+def alterar_fornecedor(id):
+    try:
+        fornecedor_alterar = request.get_json()
+        fornecedor = Fornecedores.query.filter_by(id=id).first()
+        if not fornecedor:
+            return jsonify({'mensagem': 'Fornecedor inexistente'})
+        try:
+            if 'cnpj' in fornecedor_alterar:
+                fornecedor.cnpj = fornecedor_alterar['cnpj']
+        except KeyError:
+           pass
+        try:
+            if 'razao_social' in fornecedor_alterar:
+                fornecedor.razao_social = fornecedor_alterar['razao_social']
+        except KeyError:
+           pass
+        try:
+            if 'nome_fantasia' in fornecedor_alterar:
+                fornecedor.nome_fantasia = fornecedor_alterar['nome_fantasia']
+        except KeyError:
+           pass
+        try:
+            if 'email' in fornecedor_alterar:
+                fornecedor.email = fornecedor_alterar['email']
+        except KeyError:
+           pass
+        try:
+            if 'telefone' in fornecedor_alterar:
+                fornecedor.telefone = fornecedor_alterar['telefone']
+        except KeyError:
+           pass
+        db.session.commit()
+        return jsonify({'mensagem':f'Alteração feita com êxito para {fornecedor.nome_fantasia} '})
+    except Exception as e:
+        print(e)
+        return jsonify({'mensagem': 'erro interno'})
+    
+#delete fornecedor
+@app.route('/fornecedor/<int:id>', methods=['DELETE'])
+def deletar_fornecedor(id):
+    fornecedor = Fornecedores.query.filter_by(id=id).first()
+    if not fornecedor:
+        return jsonify({'mensagem': 'Não existe esse fornecedor'})
+    fornecedor_excluido = {
+        'id': fornecedor.id,
+        'cnpj': fornecedor.cnpj,
+        'razao_social': fornecedor.razao_social,
+        'nome_fantasia': fornecedor.nome_fantasia
+    }
+    db.session.delete(fornecedor)
+    db.session.commit()
+    return jsonify({'Fornecedor Excluído': fornecedor_excluido})

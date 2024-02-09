@@ -17,6 +17,19 @@ def exibir_funcionarios():
         listadefuncionarios.append(funcionario_atual)
     return jsonify(listadefuncionarios)
 
+@app.route('/funcionario/<int:matricula>', methods=['GET'])
+def pegar_funcionario_por_matricula(matricula):
+    funcionario = Funcionarios.query.filter_by(matricula=matricula).first()
+    if not funcionario:
+        return jsonify({'mensagem': 'Funcionário não encontrado'})
+    funcionario_escolhido ={}
+    funcionario_escolhido['matricula'] = funcionario.matricula
+    funcionario_escolhido['nome'] = funcionario.nome
+    funcionario_escolhido['email'] = funcionario.email
+    funcionario_escolhido['adminstrador'] = funcionario.administrador
+    return jsonify(funcionario_escolhido)
+
+
 @app.route('/funcionario', methods=['POST'])
 def cadastrar_funcionario():
     try:
@@ -34,4 +47,42 @@ def cadastrar_funcionario():
     except Exception as e:
         print(e)
         return jsonify({'mensagem': 'Algo deu errado'}), 500
+
+
+@app.route('/funcionario/<int:matricula>', methods=['PUT'])
+def alterar_funcionario(matricula):
+    try:
+        funcionario_alterar = request.get_json()
+        funcionario = Funcionarios.query.filter_by(matricula=matricula).first()
+        if not funcionario:
+            return jsonify({'mensagem': 'Funcionário não existente'})
+        try:
+           if 'nome' in funcionario_alterar:
+               funcionario.nome = funcionario_alterar['nome']
+        except KeyError:
+            pass
+        try:
+           if 'email' in funcionario_alterar:
+               funcionario.email = funcionario_alterar['email']
+        except KeyError:
+            pass
+        try:
+           if 'administrador' in funcionario_alterar:
+               funcionario.administrador = funcionario_alterar['administrador']
+        except KeyError:
+            pass
+        try:
+           if 'senha' in funcionario_alterar:
+               senha_criptografada = bcrypt.generate_password_hash(funcionario_alterar['senha']).decode('utf-8')
+               funcionario.senha = senha_criptografada
+        except KeyError:
+            pass
+        
+        # Retorne uma resposta vazia se nenhum erro ocorrer
+        db.session.commit()
+        return jsonify({'mensagem': 'Atualização do funcionário bem-sucedida'})
+
+    except Exception as e:
+        print(e)
+        return jsonify({'mensagem': 'Algum erro'})
 
