@@ -6,6 +6,7 @@ from src.produtos import *
 from src.fornecedorproduto import *
 from src.login import *
 from src.entradasestoque import *
+from src.saidasestoque import *
 
 @app.route('/', methods=['GET'])
 def home():
