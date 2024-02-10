@@ -36,7 +36,7 @@ def login():
         return make_response('Não existe esse usuário cadastrado', 401, {'WWW-Authenticate': 'Basic realm="Login Obrigatório"'})
     if bcrypt.check_password_hash(funcionario.senha, auth.password):
         print('Senha válida')
-        token = jwt.encode({'matricula': funcionario.matricula, 'exp': (datetime.utcnow() + timedelta(minutes=60)).timestamp()}, app.config['SECRET_KEY'])
+        token = jwt.encode({'matricula': funcionario.matricula, 'exp': (datetime.utcnow() + timedelta(days=20)).timestamp()}, app.config['SECRET_KEY'])
         resposta_data = {
             'token': token,
             'matricula': funcionario.matricula,

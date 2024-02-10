@@ -54,7 +54,6 @@ class SaidasEstoque(db.Model):
     funcionario_responsavel = db.Column(db.Integer, db.ForeignKey('funcionarios.matricula'), nullable=False)
     funcionario_requisitante = db.Column(db.Integer, db.ForeignKey('funcionarios.matricula'), nullable=False)
 
-
 # Criar o database
 # with app.app_context():
 #     db.drop_all()
