@@ -46,8 +46,10 @@ def atualizar_saida_ao_estoque(funcionario, id):
             return jsonify({'mensagem': 'Não existe essa saída do estoque'})
         if saida_estoque.funcionario_responsavel != funcionario.matricula:
             return jsonify({'mensagem': 'Você não tem permissão para atualizar essa saída de estoque'})
-        saido_ao_estoque_alterar = request.get_json()
+        saida_ao_estoque_alterar = request.get_json()
+        quantidade = saida_estoque.quantidade
         
+
     except Exception as e:
         print(e)
         return jsonify({'Mensagem': 'Algo deu errado'})
