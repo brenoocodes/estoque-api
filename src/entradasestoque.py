@@ -51,7 +51,7 @@ def exibir_todas_as_entradas_logado(funcionario):
             entrada_atual['nome_responsável'] = funcionario_responsavel.nome
             listadeentradas.append(entrada_atual)
         if len(listadeentradas) == 0:
-            return jsonify({'mensagem': f'O {funcionario.nome} ainda não cadastrou nenhuma saída ao estoque'})
+            return jsonify({'mensagem': f'O {funcionario.nome} ainda não cadastrou nenhuma entrada ao estoque'})
         return jsonify(listadeentradas)
     except Exception as e:
         print(e)
