@@ -536,3 +536,7 @@ Esta rota permite excluir uma saída de estoque existente.
 Essas rotas fornecem funcionalidades completas para gerenciar saídas de estoque, permitindo visualizá-las, adicioná-las, alterá-las e excluí-las conforme necessário.
 
 
+
+##Finalizando
+
+Basicamente é isso, não se esqueça de baixar na sua máquina é testar. 
