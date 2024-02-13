@@ -143,24 +143,4 @@ def alterar_produto(funcionario, id):
         print(e)
         return jsonify({'mensagem': 'Algo de errado não está certo'}), 500  
 
-# Deletar produto
-@app.route('/produtos/<int:id>', methods=['DELETE'])
-@token_obrigatorio
-def deletar_produto(funcionario, id):
-    if not funcionario.administrador:
-        return jsonify({'mensagem': 'Você não tem permissão para acessar esta rota'}), 403
-    
-    produto = Produtos.query.filter_by(id=id).first()
-    if not produto:
-        return jsonify({'mensagem': 'Produto não encontrado'}), 404
-    
-    produto_excluido = {
-        'id': produto.id,
-        'nome': produto.nome,
-        'nome_estoque': produto.nome_estoque
-    }
-    
-    db.session.delete(produto)
-    db.session.commit()
-    
-    return jsonify({'Produto excluído': produto_excluido}), 200
+

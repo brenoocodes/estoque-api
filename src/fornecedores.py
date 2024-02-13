@@ -137,25 +137,3 @@ def alterar_fornecedor(funcionario, id):
         print(e)
         return jsonify({'mensagem': 'Algo deu errado ao alterar o fornecedor'}), 500
 
-# Deletar fornecedor
-@app.route('/fornecedor/<int:id>', methods=['DELETE'])
-@token_obrigatorio
-def deletar_fornecedor(funcionario, id):
-    if not funcionario.administrador:
-        return jsonify({'mensagem': 'Você não tem permissão para excluir este fornecedor'}), 403
-    
-    fornecedor = Fornecedores.query.filter_by(id=id).first()
-    if not fornecedor:
-        return jsonify({'mensagem': 'Não existe esse fornecedor'}), 404
-    
-    fornecedor_excluido = {
-        'id': fornecedor.id,
-        'cnpj': fornecedor.cnpj,
-        'razao_social': fornecedor.razao_social,
-        'nome_fantasia': fornecedor.nome_fantasia
-    }
-    
-    db.session.delete(fornecedor)
-    db.session.commit()
-    
-    return jsonify({'Fornecedor excluído': fornecedor_excluido}), 200

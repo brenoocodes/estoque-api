@@ -1,11 +1,13 @@
 from flask import jsonify, request
 from src.config import app, db
+from src.validadorcampo import *
 from src.login import *
 from src.models import Produtos, Fornecedores, ProdutosFornecedores
 
 #adicionar fornecedor ao produto
 @app.route('/produtos/<int:id_produto>', methods=['POST'])
 @token_obrigatorio
+@verifica_campos_tipos(['id_fornecedor'], {'id_fornecedor': int})
 def adicionar_fornecedor_ao_produto(funcionario, id_produto):
     if not funcionario.administrador:
         return jsonify({'mensagem': 'Você não tem permissão para atualizar essa saída de estoque'}), 403
@@ -64,6 +66,7 @@ def deletar_fornecedor_do_produto(funcionario, id_produto, id_fornecedor):
 
 #adicionar produto ao fornecedor
 @app.route('/fornecedor/<int:id_fornecedor>', methods=['POST'])
+@verifica_campos_tipos(['id_produto'], {'id_produto': int})
 @token_obrigatorio
 def adicionar_produto_ao_fornecedor(funcionario, id_fornecedor):
     if not funcionario.administrador:
