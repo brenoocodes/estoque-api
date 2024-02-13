@@ -13,8 +13,8 @@ def listar_produtos(funcionario):
     
     try:
         produtos = Produtos.query.all()
-
         lista_de_produtos = []
+        
         for produto in produtos:
             produto_atual = {
                 'id': produto.id,
@@ -26,12 +26,16 @@ def listar_produtos(funcionario):
             }
             
             fornecedores_produto = ProdutosFornecedores.query.filter_by(produto_id=produto_atual['id']).all()
+            
             if fornecedores_produto:
                 fornecedores_do_produto = []
+                
                 for fornecedor_produto in fornecedores_produto:
                     fornecedor = Fornecedores.query.get(fornecedor_produto.fornecedor_id)
+                    
                     if fornecedor:
                         fornecedores_do_produto.append({'id': fornecedor.id, 'nome_fantasia': fornecedor.nome_fantasia})
+                
                 produto_atual['fornecedores'] = fornecedores_do_produto
             else:
                 produto_atual['fornecedores'] = 'Esse produto ainda não tem fornecedores cadastrados'
@@ -52,6 +56,7 @@ def pegar_produto_por_id(funcionario, id):
         return jsonify({'mensagem': 'Você não tem permissão para acessar esta rota'}), 403
     
     produto = Produtos.query.filter_by(id=id).first()
+    
     if not produto:
         return jsonify({'mensagem': 'Produto não encontrado'}), 404
     
@@ -65,12 +70,16 @@ def pegar_produto_por_id(funcionario, id):
     }
     
     fornecedores_produto = ProdutosFornecedores.query.filter_by(produto_id=produto_atual['id']).all()
+    
     if fornecedores_produto:
         fornecedores_do_produto = []
+        
         for fornecedor_produto in fornecedores_produto:
             fornecedor = Fornecedores.query.get(fornecedor_produto.fornecedor_id)
+            
             if fornecedor:
                 fornecedores_do_produto.append({'id': fornecedor.id, 'nome_fantasia': fornecedor.nome_fantasia})
+        
         produto_atual['fornecedores'] = fornecedores_do_produto
     else:
         produto_atual['fornecedores'] = 'Esse produto ainda não tem fornecedores cadastrados'
@@ -91,16 +100,18 @@ def cadastrar_produto(funcionario):
         
         # Verifica se o produto já existe pelo nome
         produto_existente = Produtos.query.filter_by(nome=nome).first()
+        
         if produto_existente:
             return jsonify({'mensagem': 'Produto já cadastrado'}), 409
         
         produto = Produtos(
             nome=novo_produto['nome'],
             nome_estoque=novo_produto['nome_estoque'],
-            medida = novo_produto['medida'],
+            medida=novo_produto['medida'],
             preco=novo_produto['preco'],
             quantidade=novo_produto['quantidade']
         )
+        
         db.session.add(produto)
         db.session.commit()
         
@@ -121,6 +132,7 @@ def alterar_produto(funcionario, id):
     try:
         produto_alterado = request.get_json()
         produto = Produtos.query.filter_by(id=id).first()
+        
         if not produto:
             return jsonify({'mensagem': 'Produto não encontrado'}), 404
         
@@ -141,6 +153,4 @@ def alterar_produto(funcionario, id):
     
     except Exception as e:
         print(e)
-        return jsonify({'mensagem': 'Algo de errado não está certo'}), 500  
-
-
+        return jsonify({'mensagem': 'Algo de errado não está certo'}), 500
