@@ -42,7 +42,7 @@ O primeiro arquivo que precisamos explicar é o `config.py`. Este arquivo é o p
 Na linha abaixo, onde se lê:
 
 ```python
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/estoqueapi'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:123456789@localhost/seubanco'
 ```
 - `mysql` é o tipo de banco de dados que está sendo utilizado.
 - `root` é o nome de usuário do servidor. Após os dois pontos (:), você deve inserir a senha correspondente ao seu usuário MySQL.
@@ -198,7 +198,7 @@ Ambas as funções têm tratamento de exceções para lidar com erros de decodif
 ___
 ### [funcionarios.py](src/funcionarios.py)
 
-No arquivo `funcionarios.py`, são executados os processos de leitura, criação, atualização e exclusão de cada funcionário.
+No arquivo `funcionarios.py`, são executados os processos de leitura, criação e atualização de cada funcionário.
 
 Dentro da pasta `Funcionarios` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
 ### Rota `/funcionario` (GET)
@@ -219,5 +219,31 @@ Nesta rota, é possível alterar informações de um funcionário existente com 
 
 Esses decoradores desempenham um papel fundamental na validação e segurança das rotas da API, garantindo que apenas usuários autorizados possam acessá-las e que os dados enviados estejam corretamente formatados.
 
+___
+### [produtos.py](src/produtos.py)
 
+No arquivo `produtos.py`, são executados os processos de leitura, criação e atualização de cada produto.
+
+Dentro da pasta `Funcionarios` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
+# Rotas para Manipulação de Produtos
+
+## Listar todos os produtos (GET - /produtos)
+
+Esta rota permite visualizar todos os produtos cadastrados no sistema. Apenas administradores têm permissão para acessá-la. A função `listar_produtos` é decorada com `@token_obrigatorio` para garantir a autenticação do usuário antes de acessar a rota. Retorna uma lista de objetos JSON contendo informações sobre cada produto, incluindo seu ID, nome, estoque, medida, preço e quantidade.
+
+## Pegar produto por ID (GET - /produtos/<int:id>)
+
+Essa rota permite obter informações detalhadas sobre um produto específico com base em seu ID. Mais uma vez, apenas administradores têm permissão para acessá-la. A função `pegar_produto_por_id` é decorada com `@token_obrigatorio` para garantir a autenticação do usuário. Retorna um objeto JSON contendo informações detalhadas sobre o produto especificado, incluindo seu ID, nome, estoque, medida, preço, quantidade e uma lista de fornecedores associados, caso existam.
+
+## Cadastrar produto (POST - /produtos)
+
+Essa rota é utilizada para cadastrar um novo produto no sistema. A função `cadastrar_produto` é decorada com `@token_obrigatorio` e `@verifica_campos_tipos` para garantir que apenas administradores autenticados possam acessá-la e que os campos obrigatórios estejam no formato correto. Retorna uma mensagem de sucesso se o produto for cadastrado com sucesso ou uma mensagem de erro se algo der errado. No corpo da requisição POST, espera-se um objeto JSON contendo os seguintes campos obrigatórios: nome, estoque, medida, preço e quantidade.
+
+## Alterar produto (PUT - /produtos/<int:id>)
+
+Nesta rota, é possível alterar as informações de um produto existente com base em seu ID. A função `alterar_produto` é decorada com `@token_obrigatorio` e `@verifica_alterar` para garantir que apenas administradores autenticados possam acessá-la e que os campos obrigatórios estejam no formato correto. Retorna uma mensagem de sucesso se o produto for alterado com sucesso ou uma mensagem de erro se algo der errado. No corpo da requisição PUT, espera-se um objeto JSON contendo os campos que se deseja alterar do produto, como nome, estoque, medida, preço e quantidade.
+___
+### [fornecedores.py](src/fornecedores.py)
+
+No arquivo `fornecedores.py`, são executados os processos de leitura, criação e atualização de cada fornecedor.
 
