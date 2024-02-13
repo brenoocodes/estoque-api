@@ -10,7 +10,7 @@ from src.saidasestoque import *
 
 @app.route('/', methods=['GET'])
 def home():
-    return '<p>Ok</p>'
+    return '<h2>API controle de estoque</h2>'
 
 
 if __name__ == '__main__':
