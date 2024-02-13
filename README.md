@@ -224,26 +224,315 @@ ___
 
 No arquivo `produtos.py`, são executados os processos de leitura, criação e atualização de cada produto.
 
-Dentro da pasta `Funcionarios` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
-# Rotas para Manipulação de Produtos
+Dentro da pasta `Produtos` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
 
-## Listar todos os produtos (GET - /produtos)
+#### Rotas para Manipulação de Produtos
+
+#### Listar todos os produtos (GET - /produtos)
 
 Esta rota permite visualizar todos os produtos cadastrados no sistema. Apenas administradores têm permissão para acessá-la. A função `listar_produtos` é decorada com `@token_obrigatorio` para garantir a autenticação do usuário antes de acessar a rota. Retorna uma lista de objetos JSON contendo informações sobre cada produto, incluindo seu ID, nome, estoque, medida, preço e quantidade.
 
-## Pegar produto por ID (GET - /produtos/<int:id>)
+#### Pegar produto por ID (GET - /produtos/<int:id>)
 
 Essa rota permite obter informações detalhadas sobre um produto específico com base em seu ID. Mais uma vez, apenas administradores têm permissão para acessá-la. A função `pegar_produto_por_id` é decorada com `@token_obrigatorio` para garantir a autenticação do usuário. Retorna um objeto JSON contendo informações detalhadas sobre o produto especificado, incluindo seu ID, nome, estoque, medida, preço, quantidade e uma lista de fornecedores associados, caso existam.
 
-## Cadastrar produto (POST - /produtos)
+#### Cadastrar produto (POST - /produtos)
 
 Essa rota é utilizada para cadastrar um novo produto no sistema. A função `cadastrar_produto` é decorada com `@token_obrigatorio` e `@verifica_campos_tipos` para garantir que apenas administradores autenticados possam acessá-la e que os campos obrigatórios estejam no formato correto. Retorna uma mensagem de sucesso se o produto for cadastrado com sucesso ou uma mensagem de erro se algo der errado. No corpo da requisição POST, espera-se um objeto JSON contendo os seguintes campos obrigatórios: nome, estoque, medida, preço e quantidade.
 
-## Alterar produto (PUT - /produtos/<int:id>)
+#### Alterar produto (PUT - /produtos/<int:id>)
 
 Nesta rota, é possível alterar as informações de um produto existente com base em seu ID. A função `alterar_produto` é decorada com `@token_obrigatorio` e `@verifica_alterar` para garantir que apenas administradores autenticados possam acessá-la e que os campos obrigatórios estejam no formato correto. Retorna uma mensagem de sucesso se o produto for alterado com sucesso ou uma mensagem de erro se algo der errado. No corpo da requisição PUT, espera-se um objeto JSON contendo os campos que se deseja alterar do produto, como nome, estoque, medida, preço e quantidade.
 ___
 ### [fornecedores.py](src/fornecedores.py)
 
 No arquivo `fornecedores.py`, são executados os processos de leitura, criação e atualização de cada fornecedor.
+Dentro da pasta `Fornecedores` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
+#### Rota para Exibir Todos os Fornecedores
+
+- **Método HTTP:** GET
+- **Endpoint:** /fornecedor
+- **Autenticação:** Token obrigatório
+- **Descrição:**
+  - Esta rota permite que um usuário com permissões de administrador visualize todos os fornecedores cadastrados no sistema.
+  - Retorna uma lista de todos os fornecedores, incluindo seus detalhes, como CNPJ, razão social, nome fantasia, e-mail, telefone e os produtos associados a cada fornecedor.
+  - Caso não haja fornecedores cadastrados, retorna uma mensagem informando que nenhum fornecedor foi encontrado.
+  - Em caso de sucesso, retorna um código de status 200 (OK).
+  - Em caso de erro, retorna um código de status 500 (Internal Server Error).
+
+#### Rota para Pegar Fornecedor por ID
+
+- **Método HTTP:** GET
+- **Endpoint:** /fornecedor/<int:id>
+- **Parâmetros de URL:** id (identificador do fornecedor)
+- **Autenticação:** Token obrigatório
+- **Descrição:**
+  - Esta rota permite que um usuário com permissões de administrador obtenha os detalhes de um fornecedor específico com base no ID fornecido.
+  - Retorna os detalhes do fornecedor, incluindo CNPJ, razão social, nome fantasia, e-mail, telefone e os produtos associados a ele, se houver.
+  - Caso o fornecedor não seja encontrado com o ID fornecido, retorna uma mensagem informando que o fornecedor não foi encontrado.
+  - Em caso de sucesso, retorna um código de status 200 (OK).
+  - Em caso de erro, retorna um código de status 500 (Internal Server Error).
+
+#### Rota para Cadastrar Fornecedor
+
+- **Método HTTP:** POST
+- **Endpoint:** /fornecedor
+- **Autenticação:** Token obrigatório
+- **Corpo da Requisição:** JSON contendo os detalhes do novo fornecedor (cnpj, razao_social, nome_fantasia, email, telefone)
+- **Descrição:**
+  - Esta rota permite que um usuário com permissões de administrador cadastre um novo fornecedor no sistema.
+  - Verifica se o CNPJ do fornecedor já está cadastrado no sistema. Se estiver, retorna uma mensagem informando que o fornecedor já está cadastrado.
+  - Em caso de sucesso, cadastra o novo fornecedor e retorna uma mensagem informando que o fornecedor foi cadastrado com sucesso, juntamente com um código de status 201 (Created).
+  - Em caso de erro, retorna uma mensagem informando que ocorreu um erro ao cadastrar o fornecedor, juntamente com um código de status 500 (Internal Server Error).
+
+#### Rota para Alterar Fornecedor
+
+- **Método HTTP:** PUT
+- **Endpoint:** /fornecedor/<int:id>
+- **Parâmetros de URL:** id (identificador do fornecedor)
+- **Autenticação:** Token obrigatório
+- **Corpo da Requisição:** JSON contendo os detalhes atualizados do fornecedor (cnpj, razao_social, nome_fantasia, email, telefone)
+- **Descrição:**
+  - Esta rota permite que um usuário com permissões de administrador atualize os detalhes de um fornecedor existente com base no ID fornecido.
+  - Verifica se o fornecedor existe com o ID fornecido. Se não existir, retorna uma mensagem informando que o fornecedor não foi encontrado.
+  - Em caso de sucesso, atualiza os detalhes do fornecedor e retorna uma mensagem informando que os dados foram atualizados com sucesso, juntamente com um código de status 200 (OK).
+  - Em caso de erro, retorna uma mensagem informando que ocorreu um erro ao alterar o fornecedor, juntamente com um código de status 500 (Internal Server Error).
+
+___
+### [fornecedorproduto.py](src/fornecedorproduto.py)
+
+No arquivo `fornecedorproduto.py`, são executados as realações entre produto e fornecedores.
+Dentro da pasta `fornecedorproduto` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
+## Rota para Adicionar Fornecedor a um Produto
+
+**Método HTTP:** POST  
+**Endpoint:** `/produtos/<int:id_produto>`
+
+Esta rota permite adicionar um fornecedor existente a um produto específico. Requer autenticação com token de funcionário.
+
+### Parâmetros da Requisição
+
+- `id_produto`: ID do produto ao qual o fornecedor será adicionado.
+
+### Corpo da Requisição
+
+O corpo da requisição deve conter os seguintes campos em formato JSON:
+- `id_fornecedor`: ID do fornecedor a ser adicionado.
+
+### Respostas
+
+- **200 OK**: Se o fornecedor foi adicionado com sucesso ao produto.
+- **403 Forbidden**: Se o usuário não tem permissão para acessar essa rota.
+- **404 Not Found**: Se o produto ou fornecedor não existem.
+
+---
+
+## Rota para Remover Fornecedor de um Produto
+
+**Método HTTP:** DELETE  
+**Endpoint:** `/produtos/<int:id_produto>/<int:id_fornecedor>`
+
+Esta rota permite remover um fornecedor associado a um produto específico. Requer autenticação com token de funcionário.
+
+### Parâmetros da Requisição
+
+- `id_produto`: ID do produto do qual o fornecedor será removido.
+- `id_fornecedor`: ID do fornecedor a ser removido do produto.
+
+### Respostas
+
+- **200 OK**: Se a relação entre produto e fornecedor foi removida com sucesso.
+- **403 Forbidden**: Se o usuário não tem permissão para acessar essa rota.
+- **404 Not Found**: Se a relação entre o produto e fornecedor não existe.
+
+---
+
+## Rota para Adicionar Produto a um Fornecedor
+
+**Método HTTP:** POST  
+**Endpoint:** `/fornecedor/<int:id_fornecedor>`
+
+Esta rota permite adicionar um produto existente a um fornecedor específico. Requer autenticação com token de funcionário.
+
+### Parâmetros da Requisição
+
+- `id_fornecedor`: ID do fornecedor ao qual o produto será adicionado.
+
+### Corpo da Requisição
+
+O corpo da requisição deve conter os seguintes campos em formato JSON:
+- `id_produto`: ID do produto a ser adicionado.
+
+### Respostas
+
+- **201 Created**: Se o produto foi adicionado com sucesso ao fornecedor.
+- **403 Forbidden**: Se o usuário não tem permissão para acessar essa rota.
+- **404 Not Found**: Se o fornecedor ou produto não existem.
+
+---
+
+## Rota para Remover Produto de um Fornecedor
+
+**Método HTTP:** DELETE  
+**Endpoint:** `/fornecedor/<int:id_fornecedor>/<int:id_produto>`
+
+Esta rota permite remover um produto associado a um fornecedor específico. Requer autenticação com token de funcionário.
+
+### Parâmetros da Requisição
+
+- `id_fornecedor`: ID do fornecedor do qual o produto será removido.
+- `id_produto`: ID do produto a ser removido do fornecedor.
+
+### Respostas
+
+- **200 OK**: Se a relação entre fornecedor e produto foi removida com sucesso.
+- **403 Forbidden**: Se o usuário não tem permissão para acessar essa rota.
+- **404 Not Found**: Se a relação entre o fornecedor e produto não existe.
+
+
+
+___
+### [entradasestoque.py](src/entradaestoque.py)
+
+No arquivo `entradasestoque.py`, são executados os processos de leitura, criação e atualização de cada fornecedor.
+Dentro da pasta `entradasestoque` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
+
+#### Rota para Exibir Todas as Entradas de Estoque (`exibir_todas_as_entradas`)
+
+- **Método HTTP:** GET
+- **Endpoint:** `/entradasestoque/todos`
+
+Esta rota permite visualizar todas as entradas de estoque. Somente funcionários administradores têm acesso a essa rota.
+
+1. Primeiro, verifica se o funcionário é um administrador. Se não for, retorna uma mensagem de erro.
+2. Em seguida, busca todas as entradas de estoque no banco de dados.
+3. Itera sobre cada entrada e busca o produto, fornecedor e funcionário responsável associados a essa entrada.
+4. Monta um dicionário com os dados relevantes de cada entrada e os adiciona a uma lista.
+5. Retorna a lista de entradas em formato JSON.
+
+#### Rota para Exibir Todas as Entradas de Estoque de um Funcionário Logado (`exibir_todas_as_entradas_logado`)
+
+- **Método HTTP:** GET
+- **Endpoint:** `/entradasestoque`
+
+Esta rota permite visualizar todas as entradas de estoque feitas pelo funcionário logado.
+
+1. Busca todas as entradas de estoque associadas ao funcionário logado.
+2. Itera sobre cada entrada e busca o produto, fornecedor e funcionário responsável associados a essa entrada.
+3. Monta um dicionário com os dados relevantes de cada entrada e os adiciona a uma lista.
+4. Retorna a lista de entradas em formato JSON.
+
+#### Rota para Adicionar uma Nova Entrada de Estoque (`adicionar_entrada_ao_estoque`)
+
+- **Método HTTP:** POST
+- **Endpoint:** `/entradasestoque`
+
+Esta rota permite adicionar uma nova entrada de estoque.
+
+1. Recebe os dados da nova entrada de estoque do corpo da requisição.
+2. Verifica se o produto e o fornecedor associados à entrada existem no banco de dados.
+3. Se existirem, atualiza a quantidade do produto em estoque com base na quantidade da entrada.
+4. Adiciona a nova entrada ao estoque ao banco de dados.
+5. Retorna os detalhes da entrada adicionada em formato JSON.
+
+#### Rota para Alterar uma Entrada de Estoque Existente (`alterar_entrada_ao_estoque`)
+
+- **Método HTTP:** PUT
+- **Endpoint:** `/entradasestoque/<int:id>`
+
+Esta rota permite alterar uma entrada de estoque existente.
+
+1. Recebe os novos dados da entrada de estoque do corpo da requisição.
+2. Verifica se o funcionário tem permissão para modificar a entrada. Se não tiver, retorna uma mensagem de erro.
+3. Atualiza os campos da entrada de acordo com os novos dados fornecidos.
+4. Se a quantidade ou o produto forem alterados, atualiza a quantidade do produto em estoque adequadamente.
+5. Retorna os detalhes da entrada alterada em formato JSON.
+
+#### Rota para Excluir uma Entrada de Estoque (`excluir_entrada_ao_estoque`)
+
+- **Método HTTP:** DELETE
+- **Endpoint:** `/entradasestoque/<int:id>`
+
+Esta rota permite excluir uma entrada de estoque existente.
+
+1. Busca a entrada de estoque pelo seu ID.
+2. Verifica se o funcionário tem permissão para excluir a entrada. Se não tiver, retorna uma mensagem de erro.
+3. Atualiza a quantidade do produto em estoque subtraindo a quantidade da entrada a ser excluída.
+4. Exclui a entrada de estoque do banco de dados.
+5. Retorna os detalhes da entrada excluída em formato JSON.
+
+Essas rotas fornecem funcionalidades completas para gerenciar entradas de estoque, permitindo visualizá-las, adicioná-las, alterá-las e excluí-las conforme necessário.
+
+___
+### [saidasestoque.py](src/saidasestoque.py)
+
+No arquivo `saidasestoque.py`, são executados os processos de leitura, criação e atualização de cada fornecedor.
+Dentro da pasta `saidasestoque` no [Postman](https://documenter.getpostman.com/view/30843980/2sA2r535SC), você encontrará como será a resposta e como fazer a requisição para cada rota.
+
+#### Rota para Exibir Todas as Saídas de Estoque (`exibir_todas_as_saidas`)
+
+- **Método HTTP:** GET
+- **Endpoint:** `/saidasestoque/todos`
+
+Esta rota permite visualizar todas as saídas de estoque. Apenas funcionários administradores têm acesso a esta rota.
+
+1. Primeiro, verifica se o funcionário é um administrador. Se não for, retorna uma mensagem de erro.
+2. Em seguida, busca todas as saídas de estoque no banco de dados.
+3. Itera sobre cada saída e busca o produto e os funcionários envolvidos associados a essa saída.
+4. Monta um dicionário com os dados relevantes de cada saída e os adiciona a uma lista.
+5. Retorna a lista de saídas em formato JSON.
+
+#### Rota para Exibir Todas as Saídas de Estoque de um Funcionário Logado (`exibir_todas_as_saidas_logado`)
+
+- **Método HTTP:** GET
+- **Endpoint:** `/saidasestoque`
+
+Esta rota permite visualizar todas as saídas de estoque feitas pelo funcionário logado.
+
+1. Busca todas as saídas de estoque associadas ao funcionário logado.
+2. Itera sobre cada saída e busca o produto e os funcionários envolvidos associados a essa saída.
+3. Monta um dicionário com os dados relevantes de cada saída e os adiciona a uma lista.
+4. Retorna a lista de saídas em formato JSON.
+
+#### Rota para Adicionar uma Nova Saída de Estoque (`saida_ao_estoque`)
+
+- **Método HTTP:** POST
+- **Endpoint:** `/saidasestoque`
+
+Esta rota permite adicionar uma nova saída de estoque.
+
+1. Recebe os dados da nova saída de estoque do corpo da requisição.
+2. Verifica se o produto e os funcionários associados à saída existem no banco de dados.
+3. Verifica se a quantidade de produtos disponíveis no estoque é suficiente para atender à saída.
+4. Adiciona a nova saída de estoque ao banco de dados e atualiza a quantidade de produtos em estoque.
+5. Retorna os detalhes da saída adicionada em formato JSON.
+
+#### Rota para Atualizar uma Saída de Estoque Existente (`atualizar_saida_ao_estoque`)
+
+- **Método HTTP:** PUT
+- **Endpoint:** `/saidasestoque/<int:id>`
+
+Esta rota permite atualizar uma saída de estoque existente.
+
+1. Recebe os novos dados da saída de estoque do corpo da requisição.
+2. Verifica se o funcionário tem permissão para modificar a saída. Se não tiver, retorna uma mensagem de erro.
+3. Atualiza os campos da saída de acordo com os novos dados fornecidos.
+4. Se a quantidade ou o produto forem alterados, atualiza a quantidade do produto em estoque adequadamente.
+5. Retorna os detalhes da saída atualizada em formato JSON.
+
+#### Rota para Excluir uma Saída de Estoque (`excluir_saida_ao_estoque`)
+
+- **Método HTTP:** DELETE
+- **Endpoint:** `/saidasestoque/<int:id>`
+
+Esta rota permite excluir uma saída de estoque existente.
+
+1. Busca a saída de estoque pelo seu ID.
+2. Verifica se o funcionário tem permissão para excluir a saída. Se não tiver, retorna uma mensagem de erro.
+3. Atualiza a quantidade do produto em estoque adicionando a quantidade da saída que está sendo excluída.
+4. Exclui a saída de estoque do banco de dados.
+5. Retorna os detalhes da saída excluída em formato JSON.
+
+Essas rotas fornecem funcionalidades completas para gerenciar saídas de estoque, permitindo visualizá-las, adicioná-las, alterá-las e excluí-las conforme necessário.
+
 
