@@ -13,7 +13,7 @@ def verifica_campos_tipos(campos_obrigatorios, tipos_esperados):
                 
                 for campo in nova_entrada_ao_estoque:
                     if campo not in campos_obrigatorios:
-                        return jsonify({'mensagem': f'O campo {campo} não é esperado, favor confirmar os campos necessários'})
+                        return jsonify({'mensagem': f'O campo {campo} não é esperado, favor confirmar os campos necessários'}), 400
                 for campo, tipo_esperado in tipos_esperados.items():
                     if campo not in nova_entrada_ao_estoque:
                         return jsonify({'mensagem': f'O campo obrigatório {campo} não foi encontrado, por favor verificar.'}), 400
