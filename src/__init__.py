@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from itsdangerous import URLSafeTimedSerializer
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'FsjdejefweFRFWG#3452%@%@TRWWewrgwg4rtwghyettwwt254536g'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:breno19042003@brenocodesbanco.clysq3fxahpq.us-east-1.rds.amazonaws.com/brenocodesbanco'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:breno19042003@localhost/estoqueprojeto'
-CORS(app)
+app.config['SECRET_KEY'] = os.getenv("SECRETY_KEY")
+
+# Configuração da URI do banco de dados SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI")
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
