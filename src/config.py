@@ -6,10 +6,10 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 
 # Configuração da chave secreta para proteger sessões e outros dados
-app.config['SECRET_KEY'] = 'FsjdejefweFRFWG#3452%@%@TRWWewrgwg4rtwghyettwwt254536g'
+app.config['SECRET_KEY'] = 'Sua chave'
 
 # Configuração da URI do banco de dados SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:breno19042003@localhost/estoqueapi'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'Sua conexão ao banco'
 
 # Inicialização do objeto de banco de dados SQLAlchemy
 db = SQLAlchemy(app)
