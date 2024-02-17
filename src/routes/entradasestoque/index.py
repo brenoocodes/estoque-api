@@ -1,8 +1,8 @@
 from flask import jsonify, request
-from src.config import app, db
-from src.validadorcampo import *
-from src.login import *
-from src.models import Produtos, Fornecedores, EntradasEstoque, Funcionarios
+from src import app, db
+from src.config.validadorcampo import *
+from src.config.login import *
+from src.models.models import Produtos, Fornecedores, EntradasEstoque, Funcionarios
 
 # Endpoint para exibir todas as entradas ao estoque (requer permissão de administrador)
 @app.route('/entradasestoque/todos', methods=['GET'])

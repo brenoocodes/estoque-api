@@ -1,8 +1,8 @@
 from flask import jsonify, request
-from src.config import app, db
-from src.validadorcampo import *
-from src.login import *
-from src.models import Fornecedores, ProdutosFornecedores, Produtos
+from src.config.login import *
+from src.config.validadorcampo import *
+from src import app, db, bcrypt
+from src.models.models import Fornecedores, ProdutosFornecedores, Produtos
 
 # Endpoint para exibir todos os fornecedores
 @app.route('/fornecedor', methods=['GET'])
@@ -151,4 +151,3 @@ def alterar_fornecedor(funcionario, id):
     except Exception as e:
         print(e)
         return jsonify({'mensagem': 'Algo deu errado ao alterar o fornecedor'}), 500
-

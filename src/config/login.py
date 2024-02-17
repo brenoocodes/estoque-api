@@ -1,8 +1,8 @@
 from flask import jsonify, request, make_response
-from src.config import app, bcrypt
+from src import app, bcrypt
 from datetime import datetime, timedelta
 from sqlalchemy import or_
-from src.models import Funcionarios
+from src.models.models import Funcionarios
 from functools import wraps
 import jwt
 

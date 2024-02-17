@@ -1,5 +1,13 @@
+import sys
+from pathlib import Path
+# Obtém o diretório do arquivo atual e seu diretório pai
+file = Path(__file__).resolve()
+parent = file.parent.parent.parent
+# Adiciona o diretório pai ao sys.path
+sys.path.append(str(parent))
+
 from datetime import datetime  # Para manipulação de datas e horas
-from src.config import app, db
+from src import app, db
 # Importa o objeto db, que é uma instância do SQLAlchemy definida no __init__.py
 
 # Definição da classe Funcionarios

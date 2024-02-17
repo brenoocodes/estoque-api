@@ -1,8 +1,8 @@
 from flask import jsonify, request
-from src.login import *
-from src.validadorcampo import *
-from src.config import app, db, bcrypt
-from src.models import Funcionarios
+from src.config.login import *
+from src.config.validadorcampo import *
+from src import app, db, bcrypt
+from src.models.models import Funcionarios
 
 # Exibir todos os funcionários
 @app.route('/funcionario', methods=['GET'])
@@ -81,7 +81,7 @@ def cadastrar_funcionario(adm):
 # Alterar funcionário por matrícula
 @app.route('/funcionario/<int:matricula>', methods=['PUT'])
 @token_obrigatorio
-@verifica_alterar(['matricula', 'email', 'senha', 'telefone', 'administrador'], {'matricula': str, 'email': str, 'senha': str, 'telefone': str, 'administrador': bool})
+@verifica_alterar(['nome', 'email', 'senha', 'telefone', 'administrador'], {'nome': str, 'email': str, 'senha': str, 'telefone': str, 'administrador': bool})
 def alterar_funcionario(funcionario, matricula):
     if not funcionario.administrador:
         return jsonify({'mensagem': 'Você não tem permissão para alterar esse processo'}), 403

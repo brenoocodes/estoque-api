@@ -1,8 +1,8 @@
 from flask import jsonify, request
-from src.login import *
-from src.validadorcampo import *
-from src.config import app, db
-from src.models import Produtos, Fornecedores, ProdutosFornecedores
+from src.config.login import *
+from src.config.validadorcampo import *
+from src import app, db, bcrypt
+from src.models.models import Produtos, Fornecedores, ProdutosFornecedores
 
 # Listar todos os produtos
 @app.route('/produtos', methods=['GET'])

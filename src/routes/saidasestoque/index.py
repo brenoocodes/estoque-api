@@ -1,8 +1,8 @@
 from flask import jsonify, request, make_response
-from src.config import app, db
-from src.validadorcampo import *
-from src.models import Produtos, SaidasEstoque, Funcionarios
-from src.login import token_obrigatorio
+from src import app, db
+from src.config.validadorcampo import *
+from src.models.models import Produtos, SaidasEstoque, Funcionarios
+from src.config.login import token_obrigatorio
 
 # Exibir todas as saídas de estoque (para administradores)
 @app.route('/saidasestoque/todos', methods=['GET'])
