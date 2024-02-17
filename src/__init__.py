@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 import os
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRETY_KEY")
